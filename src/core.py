@@ -35,4 +35,6 @@ while True:
             print('Finalizando o Programa')
             break
         
-        case ''
+        case '_':
+            print('Opção Inválida!')
+            break
