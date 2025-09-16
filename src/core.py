@@ -18,7 +18,10 @@ while True:
                 if user.user_name == user_name and user.get_password() == user_password:
                     print('Login realizado com sucesso! Bem Vindo {user.user_name}!')
                     while True:
-                        print('Opções: ')
+                        print("""
+                            Opções:
+                            1 - Visualizar Perfil
+                            2 - """)
                         break
                     break
                 else:
