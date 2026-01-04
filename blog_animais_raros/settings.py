@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.pythonanywhere.com',  # if using PythonAnywhere
-    '.yourdomain.com',      # your production domain...
+    '.super-duper-adventure-69vpxgqwj4w4c5rxr-8000.app.github.dev',      # your production domain...
 ]
 
 # Application definition
