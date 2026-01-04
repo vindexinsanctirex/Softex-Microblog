@@ -1,0 +1,252 @@
+<!-- blog/templates/blog/lista_animais.html -->
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}Animais Raros do Brasil - Página Inicial{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(rgba(44, 85, 48, 0.9), rgba(44, 85, 48, 0.7)),
+                    url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+        padding: 4rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+    }
+    
+    .hero h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .categories {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+    
+    .category-btn {
+        background: white;
+        border: 2px solid #2c5530;
+        color: #2c5530;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    
+    .category-btn:hover {
+        background: #2c5530;
+        color: white;
+        transform: scale(1.05);
+    }
+    
+    .animal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .animal-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .animal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .animal-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .animal-content {
+        padding: 1.5rem;
+    }
+    
+    .animal-title {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+        color: #2c5530;
+    }
+    
+    .animal-scientific {
+        font-style: italic;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .animal-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .animal-category {
+        background: #e8f5e9;
+        color: #2c5530;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+    
+    .animal-status {
+        background: #ffebee;
+        color: #c62828;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+    
+    .animal-excerpt {
+        color: #555;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .read-more {
+        display: inline-block;
+        background: #4a7c59;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    
+    .read-more:hover {
+        background: #2c5530;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    
+    .page-link {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .page-link:hover {
+        background: #f0f0f0;
+    }
+    
+    .page-current {
+        padding: 0.5rem 1rem;
+        background: #2c5530;
+        color: white;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Descubra a Fauna Brasileira</h2>
+    <p>Conheça os animais mais raros e fascinantes do Brasil. Nossa missão é compartilhar conhecimento sobre essas espécies incríveis e promover sua conservação.</p>
+</section>
+
+<section class="categories">
+    {% for codigo, nome in view.categorias %}
+    <a href="{% url 'animais_por_categoria' codigo %}" class="category-btn">{{ nome }}</a>
+    {% endfor %}
+</section>
+
+<section class="animal-grid">
+    {% for animal in page_obj %}
+    <article class="animal-card">
+        {% if animal.imagem_url %}
+        <img src="{{ animal.imagem_url }}" alt="{{ animal.titulo }}" class="animal-img">
+        {% else %}
+        <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Imagem padrão" class="animal-img">
+        {% endif %}
+        
+        <div class="animal-content">
+            <h3 class="animal-title">{{ animal.titulo }}</h3>
+            <p class="animal-scientific">{{ animal.nome_cientifico }}</p>
+            
+            <div class="animal-meta">
+                <span class="animal-category">{{ animal.get_categoria_display }}</span>
+                <span class="animal-status">{{ animal.get_estado_conservacao_display }}</span>
+            </div>
+            
+            <p class="animal-excerpt">{{ animal.texto|truncatewords:30 }}</p>
+            
+            <a href="{% url 'detalhe_animal' pk=animal.pk %}" class="read-more">Leia mais</a>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Anterior</a>
+    {% endif %}
+    
+    <span class="page-current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-link">Próxima</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Adicione categorias ao contexto
+    document.addEventListener('DOMContentLoaded', function() {
+        const categories = [
+            ['MAMIFERO', 'Mamíferos'],
+            ['AVE', 'Aves'],
+            ['REPTIL', 'Répteis'],
+            ['ANFIBIO', 'Anfíbios'],
+            ['PEIXE', 'Peixes'],
+            ['INSETO', 'Insetos']
+        ];
+        
+        // Atualizar footer com categorias
+        const footerSection = document.querySelector('.footer-section:nth-child(2) ul');
+        if (footerSection) {
+            footerSection.innerHTML = '';
+            categories.forEach(([codigo, nome]) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `/categoria/${codigo}/`;
+                a.textContent = nome;
+                li.appendChild(a);
+                footerSection.appendChild(li);
+            });
+        }
+    });
+</script>
+{% endblock %}

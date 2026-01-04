@@ -1,0 +1,57 @@
+<!-- blog/templates/blog/categoria.html -->
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ categoria }} - Animais Raros do Brasil{% endblock %}
+
+{% block content %}
+<div class="category-header" style="text-align: center; margin-bottom: 3rem;">
+    <h1 style="color: #2c5530; font-size: 2.5rem; margin-bottom: 1rem;">{{ categoria }}</h1>
+    <p style="color: #666; font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+        Conheça os animais da categoria {{ categoria|lower }} que estão em risco no Brasil.
+    </p>
+    <a href="{% url 'lista_animais' %}" style="display: inline-block; margin-top: 1rem; color: #4a7c59; text-decoration: none;">
+        ← Voltar para todos os animais
+    </a>
+</div>
+
+{% if animais %}
+<div class="animal-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+    {% for animal in animais %}
+    <article class="animal-card" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+        {% if animal.imagem_url %}
+        <img src="{{ animal.imagem_url }}" alt="{{ animal.titulo }}" style="width: 100%; height: 200px; object-fit: cover;">
+        {% else %}
+        <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Imagem padrão" style="width: 100%; height: 200px; object-fit: cover;">
+        {% endif %}
+        
+        <div style="padding: 1.5rem;">
+            <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #2c5530;">{{ animal.titulo }}</h3>
+            <p style="font-style: italic; color: #666; margin-bottom: 1rem;">{{ animal.nome_cientifico }}</p>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem;">
+                <span style="background: #e8f5e9; color: #2c5530; padding: 0.25rem 0.75rem; border-radius: 15px; font-weight: bold;">
+                    {{ animal.get_categoria_display }}
+                </span>
+                <span style="background: #ffebee; color: #c62828; padding: 0.25rem 0.75rem; border-radius: 15px; font-weight: bold;">
+                    {{ animal.get_estado_conservacao_display }}
+                </span>
+            </div>
+            
+            <p style="color: #555; margin-bottom: 1rem; line-height: 1.6;">{{ animal.texto|truncatewords:30 }}</p>
+            
+            <a href="{% url 'detalhe_animal' pk=animal.pk %}" style="display: inline-block; background: #4a7c59; color: white; padding: 0.5rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background 0.3s;">
+                Leia mais
+            </a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align: center; padding: 4rem; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <p style="font-size: 1.2rem; color: #666;">Nenhum animal encontrado nesta categoria.</p>
+    <a href="{% url 'lista_animais' %}" style="display: inline-block; margin-top: 1rem; background: #4a7c59; color: white; padding: 0.75rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold;">
+        Ver todos os animais
+    </a>
+</div>
+{% endif %}
+{% endblock %}

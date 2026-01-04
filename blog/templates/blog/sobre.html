@@ -1,0 +1,231 @@
+<!-- blog/templates/blog/sobre.html -->
+{% extends 'blog/base.html' %}
+
+{% block title %}Sobre - Animais Raros do Brasil{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 3rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .about-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .about-header h1 {
+        color: #2c5530;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .about-header .subtitle {
+        color: #666;
+        font-size: 1.2rem;
+    }
+    
+    .about-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .about-section h2 {
+        color: #2c5530;
+        border-bottom: 3px solid #4a7c59;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .about-content {
+        line-height: 1.8;
+        font-size: 1.1rem;
+        color: #444;
+    }
+    
+    .about-content p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .mission-list {
+        list-style: none;
+        padding-left: 1rem;
+    }
+    
+    .mission-list li {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .mission-list li:before {
+        content: "✓";
+        color: #4a7c59;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+        transition: transform 0.3s;
+    }
+    
+    .stat-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #2c5530;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+        color: #666;
+    }
+    
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .team-member {
+        text-align: center;
+        padding: 1.5rem;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        transition: box-shadow 0.3s;
+    }
+    
+    .team-member:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .team-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 3px solid #4a7c59;
+    }
+    
+    .team-name {
+        font-weight: bold;
+        color: #2c5530;
+        margin-bottom: 0.5rem;
+    }
+    
+    .team-role {
+        color: #666;
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <h1>Sobre o Blog</h1>
+        <p class="subtitle">Conhecimento para a conservação da fauna brasileira</p>
+    </div>
+    
+    <div class="about-section">
+        <h2>Nossa Missão</h2>
+        <div class="about-content">
+            <p>O Blog Animais Raros do Brasil nasceu da paixão pela biodiversidade única do nosso país. Nosso objetivo é:</p>
+            <ul class="mission-list">
+                <li>Divulgar informações sobre espécies raras da fauna brasileira</li>
+                <li>Promover a conscientização sobre conservação ambiental</li>
+                <li>Fornecer conteúdo educativo para estudantes e pesquisadores</li>
+                <li>Inspirar ações de preservação da nossa rica biodiversidade</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2>O Brasil e Sua Biodiversidade</h2>
+        <div class="about-content">
+            <p>O Brasil abriga cerca de 20% de toda a biodiversidade do planeta. Somos o país com a maior variedade de espécies de mamíferos e peixes de água doce, e o segundo em anfíbios, répteis e aves.</p>
+            <p>Infelizmente, muitas dessas espécies estão ameaçadas devido a fatores como desmatamento, mudanças climáticas e perda de habitat.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">+120k</span>
+                    <span class="stat-label">Espécies conhecidas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1.173</span>
+                    <span class="stat-label">Espécies ameaçadas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Biomas únicos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2>Nossa Equipe</h2>
+        <div class="about-content">
+            <p>Somos uma equipe de biólogos, conservacionistas e apaixonados pela natureza, dedicados a compartilhar conhecimento sobre a fauna brasileira.</p>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Carlos Silva" class="team-avatar">
+                    <div class="team-name">Carlos Silva</div>
+                    <div class="team-role">Biólogo - Coordenador</div>
+                </div>
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b786d4d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Ana Costa" class="team-avatar">
+                    <div class="team-name">Ana Costa</div>
+                    <div class="team-role">Conservacionista</div>
+                </div>
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Pedro Santos" class="team-avatar">
+                    <div class="team-name">Pedro Santos</div>
+                    <div class="team-role">Fotógrafo da Natureza</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2>Junte-se a Nós</h2>
+        <div class="about-content">
+            <p>A conservação da biodiversidade é responsabilidade de todos. Você pode contribuir:</p>
+            <ul class="mission-list">
+                <li>Compartilhando nosso conteúdo</li>
+                <li>Participando de ações de conservação</li>
+                <li>Apoiando organizações ambientais</li>
+                <li>Praticando o consumo consciente</li>
+            </ul>
+            <p>Entre em contato conosco para saber mais sobre como ajudar!</p>
+            <a href="{% url 'contato' %}" class="back-button" style="display: inline-block; margin-top: 1rem;">Entre em Contato</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
