@@ -4,6 +4,7 @@ Django settings for blog_animais_raros project.
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-j()j6yf(g3&8+z!a%(4^+i%b6*m9lw3l*()ma&#e4&11d22&hv')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Application definition
 INSTALLED_APPS = [
@@ -56,19 +57,38 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blog_animais_raros.wsgi.application'
 
-# Database
-if os.environ.get('DATABASE_URL'):
-    # PostgreSQL no Render
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+# ========== DATABASE CONFIG - SIMPLIFICADA E CORRETA ==========
+
+# Verificar se estamos no Render (produção)
+if 'RENDER' in os.environ:
+    # PRODUÇÃO NO RENDER - PostgreSQL
+    print("🚀 Modo: PRODUÇÃO (Render) - Usando PostgreSQL")
+    
+    # Tentar importar dj_database_url
+    try:
+        import dj_database_url
+        DATABASE_URL = os.environ.get('DATABASE_URL')
+        
+        if DATABASE_URL:
+            DATABASES = {
+                'default': dj_database_url.config(
+                    default=DATABASE_URL,
+                    conn_max_age=600,
+                    ssl_require=True
+                )
+            }
+            print(f"✅ PostgreSQL configurado: {DATABASES['default']['HOST']}")
+        else:
+            print("❌ DATABASE_URL não encontrada no Render!")
+            sys.exit(1)
+            
+    except ImportError:
+        print("❌ dj-database-url não instalado. Execute: pip install dj-database-url")
+        sys.exit(1)
+        
 else:
-    # SQLite local
+    # DESENVOLVIMENTO LOCAL - SQLite
+    print("💻 Modo: DESENVOLVIMENTO LOCAL - Usando SQLite")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -108,41 +128,32 @@ STATICFILES_DIRS = [
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅✅✅ **DOMÍNIOS CORRETOS DO CODESPACE/GITHUB** ✅✅✅
+# ALLOWED_HOSTS
 ALLOWED_HOSTS = [
-    # SEU DOMÍNIO ORIGINAL DO CODESPACE/GITHUB:
-    '.super-duper-adventure-69vpxgqwj4w4c5rxr-8000.app.github.dev',  # ← SEU DOMÍNIO!
-    
-    # Para desenvolvimento local:
     'localhost',
     '127.0.0.1',
-    
-    # Para o Render (se estiver usando):
-    '.onrender.com',  # Todos subdomínios do Render
+    '.onrender.com',
+    '.app.github.dev',
+    '.github.dev',
 ]
 
 # Adicionar host dinâmico do Render se existir
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    print(f"🌐 Host do Render adicionado: {RENDER_EXTERNAL_HOSTNAME}")
 
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = []
 
-# ✅ SEU DOMÍNIO DO CODESPACE/GITHUB:
-CSRF_TRUSTED_ORIGINS.extend([
-    'https://super-duper-adventure-69vpxgqwj4w4c5rxr-8000.app.github.dev',
-    'http://super-duper-adventure-69vpxgqwj4w4c5rxr-8000.app.github.dev',
-])
-
-# Adicionar host dinâmico do Render (se estiver usando)
+# Adicionar hosts do Render
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.extend([
         f'https://{RENDER_EXTERNAL_HOSTNAME}',
         f'http://{RENDER_EXTERNAL_HOSTNAME}',
     ])
 
-# Adicionar localhost para desenvolvimento
+# Adicionar localhost
 CSRF_TRUSTED_ORIGINS.extend([
     'http://localhost:8000',
     'http://127.0.0.1:8000',
@@ -151,8 +162,10 @@ CSRF_TRUSTED_ORIGINS.extend([
 ])
 
 # Configurações de produção
-if RENDER_EXTERNAL_HOSTNAME or 'RENDER' in os.environ:
+if 'RENDER' in os.environ:
     DEBUG = False
+    print("🔒 Modo PRODUÇÃO - Segurança ativada")
+    
     # Configurações de segurança
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -161,27 +174,17 @@ if RENDER_EXTERNAL_HOSTNAME or 'RENDER' in os.environ:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     
-    # WhiteNoise config
+    # WhiteNoise config (produção)
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
     WHITENOISE_USE_FINDERS = True
     WHITENOISE_MANIFEST_STRICT = False
+    
 else:
     DEBUG = True
+    print("🔓 Modo DESENVOLVIMENTO - Debug ativado")
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-# Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-    },
-}
+# Remover print no ambiente de produção
+if 'RENDER' not in os.environ:
+    print(f"✅ Configuração carregada. DEBUG={DEBUG}")
+    print(f"✅ Banco de dados: {DATABASES['default']['ENGINE']}")

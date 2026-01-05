@@ -53,3 +53,45 @@ def contato(request):
         return render(request, 'blog/contato.html', {'sucesso': sucesso})
     
     return render(request, 'blog/contato.html')
+
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+import os
+
+def emergency_fix(request):
+    """Endpoint de emergência para corrigir admin via navegador"""
+    
+    # Senha de segurança (mude para algo seguro!)
+    token = request.GET.get('token', '')
+    if token != '123456emergencia':
+        return HttpResponse('🔒 Acesso negado. Token inválido.', status=403)
+    
+    try:
+        # Deletar admin existente
+        User.objects.filter(username='admin').delete()
+        
+        # Criar novo admin
+        admin = User.objects.create_superuser(
+            username='admin',
+            email=os.environ.get('ADMIN_EMAIL', 'admin@animaisraros.com'),
+            password=os.environ.get('ADMIN_PASSWORD', 'Admin123!')
+        )
+        
+        return HttpResponse(f'''
+        <h1>✅ ADMIN CORRIGIDO COM SUCESSO!</h1>
+        
+        <h3>📋 Credenciais:</h3>
+        <p><strong>Usuário:</strong> admin</p>
+        <p><strong>Senha:</strong> {os.environ.get('ADMIN_PASSWORD', 'Admin123!')}</p>
+        <p><strong>Email:</strong> {os.environ.get('ADMIN_EMAIL', 'admin@animaisraros.com')}</p>
+        
+        <h3>🔗 Links:</h3>
+        <p><a href="/admin/" target="_blank">➡️ Ir para o Admin</a></p>
+        
+        <h3>⚠️ IMPORTANTE:</h3>
+        <p>Esta página deve ser removida após usar!</p>
+        <p>Mude o token no código para algo mais seguro.</p>
+        ''')
+        
+    except Exception as e:
+        return HttpResponse(f'❌ Erro: {str(e)}')
