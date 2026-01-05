@@ -1,15 +1,27 @@
 #!/usr/bin/env bash
+# startup.sh - VERSÃO FINAL TESTADA
 
-echo "🚀 Iniciando..."
+echo "🌿 INICIANDO BLOG ANIMAIS RAROS..."
 
-# Migrações
+# 1. MIGRAÇÕES (vão para o banco correto)
+echo "🗄️  Aplicando migrações..."
 python manage.py migrate --noinput
+echo "✅ Migrações concluídas"
 
-# Criar admin (SCRIPT)
-python create_render_admin.py
+# 2. DEBUG E CRIAÇÃO DO ADMIN (SÓ NO RENDER)
+if [ -n "$RENDER" ]; then
+    echo "🌍 AMBIENTE RENDER DETECTADO"
+    echo "🔧 Executando diagnóstico e criação do admin..."
+    python debug_render.py
+else
+    echo "💻 Ambiente local - Modo desenvolvimento"
+fi
 
-# Static files
+# 3. STATIC FILES
+echo "🎨 Processando arquivos estáticos..."
 python manage.py collectstatic --noinput
+echo "✅ Arquivos estáticos prontos"
 
-# Iniciar
+# 4. INICIAR
+echo "🚀 Iniciando servidor Gunicorn..."
 exec gunicorn blog_animais_raros.wsgi:application --bind 0.0.0.0:$PORT
