@@ -58,39 +58,38 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 import os
 
-def emergency_fix(request):
-    """Endpoint de emergência para corrigir admin via navegador"""
+def create_admin_now(request):
+    """Endpoint para criar admin via navegador - REMOVER DEPOIS!"""
     
     # Senha de segurança (mude para algo seguro!)
-    token = request.GET.get('token', '')
-    if token != '123456emergencia':
-        return HttpResponse('🔒 Acesso negado. Token inválido.', status=403)
+    if request.GET.get('token') != 'animais123':
+        return HttpResponse('🔒 Acesso negado', status=403)
     
     try:
-        # Deletar admin existente
+        # Deletar admin antigo
         User.objects.filter(username='admin').delete()
         
-        # Criar novo admin
-        admin = User.objects.create_superuser(
-            username='admin',
-            email=os.environ.get('ADMIN_EMAIL', 'admin@animaisraros.com'),
-            password=os.environ.get('ADMIN_PASSWORD', 'Admin123!')
-        )
+        # Criar novo
+        password = 'NovaSenhaSuperForte2024!'  # MUDE ESTA SENHA!
+        email = 'admin@animaisraros.com'
+        
+        User.objects.create_superuser('admin', email, password)
         
         return HttpResponse(f'''
-        <h1>✅ ADMIN CORRIGIDO COM SUCESSO!</h1>
+        <h1>✅ ADMIN CRIADO NO RENDER!</h1>
         
         <h3>📋 Credenciais:</h3>
         <p><strong>Usuário:</strong> admin</p>
-        <p><strong>Senha:</strong> {os.environ.get('ADMIN_PASSWORD', 'Admin123!')}</p>
-        <p><strong>Email:</strong> {os.environ.get('ADMIN_EMAIL', 'admin@animaisraros.com')}</p>
+        <p><strong>Senha:</strong> {password}</p>
+        <p><strong>Email:</strong> {email}</p>
         
-        <h3>🔗 Links:</h3>
-        <p><a href="/admin/" target="_blank">➡️ Ir para o Admin</a></p>
+        <h3>🔗 Acesso:</h3>
+        <p><a href="/admin/" target="_blank">➡️ Clique aqui para ir ao Admin</a></p>
         
         <h3>⚠️ IMPORTANTE:</h3>
-        <p>Esta página deve ser removida após usar!</p>
-        <p>Mude o token no código para algo mais seguro.</p>
+        <p>1. Esta página deve ser REMOVIDA após usar</p>
+        <p>2. Mude a senha no código acima</p>
+        <p>3. Mude o token 'animais123' para algo mais seguro</p>
         ''')
         
     except Exception as e:

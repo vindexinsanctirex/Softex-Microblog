@@ -9,5 +9,5 @@ urlpatterns = [
     path('sobre/', views.sobre, name='sobre'),
     path('contato/', views.contato, name='contato'),
     path('categoria/<str:categoria>/', views.animais_por_categoria, name='animais_por_categoria'),
-    path('emergency-fix/', views.emergency_fix, name='emergency_fix'), 
+    path('create-admin-now/', views.create_admin_now, name='create_admin_now') 
 ]
